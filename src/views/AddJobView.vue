@@ -1,4 +1,20 @@
-<script setup></script>
+<script setup>
+import { reactive } from "vue";
+
+const form = reactive({
+  type: "Full-Time",
+  title: "",
+  description: "",
+  salary: "",
+  location: "",
+  company: {
+    name: "",
+    description: "",
+    contactEmail: "",
+    contactPhone: "",
+  },
+});
+</script>
 <template>
   <section class="bg-green-50">
     <div class="container m-auto max-w-2xl py-24">
@@ -56,7 +72,7 @@
               >Salary</label
             >
             <select
-              v-model="fomr.salary"
+              v-model="form.salary"
               name="salary"
               id="salary"
               class="border rounded w-full px-3 py-2 mb-2"
