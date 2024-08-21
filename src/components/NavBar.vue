@@ -1,5 +1,6 @@
 <script setup>
 import logo from "../assets/img/logo.png";
+import { RouterLink } from "vue-router";
 </script>
 
 <template>
@@ -11,19 +12,26 @@ import logo from "../assets/img/logo.png";
         >
           <img class="h-10 w-auto" :src="logo" alt="Vue Jobs" />
           <div class="md:ml-auto">
-            <ul class="flex space-x-2">
-              <li
+            <div class="flex space-x-2">
+              <RouterLink
+                to="/"
                 class="rounded-md bg-green-900 hover:bg-gray-900 text-white px-3 py-2"
               >
                 Home
-              </li>
-              <li class="rounded-md hover:bg-gray-900 text-white px-3 py-2">
+              </RouterLink>
+              <RouterLink
+                to="/jobs"
+                class="rounded-md hover:bg-gray-900 text-white px-3 py-2"
+              >
                 Jobs
-              </li>
-              <li class="rounded-md hover:bg-gray-900 text-white px-3 py-2">
+              </RouterLink>
+              <RouterLink
+                to="/add-job"
+                class="rounded-md hover:bg-gray-900 text-white px-3 py-2"
+              >
                 Add Job
-              </li>
-            </ul>
+              </RouterLink>
+            </div>
           </div>
         </div>
       </div>
