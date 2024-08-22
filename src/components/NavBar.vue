@@ -26,7 +26,7 @@ import { RouterLink } from "vue-router";
                 Jobs
               </RouterLink>
               <RouterLink
-                to="/add-job"
+                to="/jobs/add"
                 class="rounded-md hover:bg-gray-900 text-white px-3 py-2"
               >
                 Add Job

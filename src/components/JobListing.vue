@@ -21,7 +21,7 @@ import { RouterLink } from "vue-router";
           Boston, MA
         </div>
         <RouterLink
-          to="#"
+          to="/jobs/:id"
           class="h-[36px] bg-green-500 hover:bg-green-600 rounded-lg px-4 py-2 text-white text-center text-sm"
           >Read More</RouterLink
         >
