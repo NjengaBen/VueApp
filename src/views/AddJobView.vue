@@ -1,5 +1,8 @@
 <script setup>
 import { reactive } from "vue";
+import axios from "axios";
+import router from "@/router";
+import { useToast } from "vue-toastification";
 
 const form = reactive({
   type: "Full-Time",
@@ -14,19 +17,41 @@ const form = reactive({
     contactPhone: "",
   },
 });
+
+const toast = useToast();
+
+const handleSubmit = async () => {
+  const newJob = {
+    type: form.type,
+    title: form.title,
+    description: form.description,
+    salary: form.salary,
+    location: form.location,
+    company: {
+      name: form.company.name,
+      description: form.company.description,
+      contactEmail: form.company.contactEmail,
+      contatctPhone: form.company.contactEmail,
+    },
+  };
+  try {
+    const response = await axios.post("/api/jobs", newJob);
+    toast.success("Job Added Successfully");
+    router.push(`/jobs/${response.data.id}`);
+  } catch (error) {
+    console.log("Error fetching job", error);
+    toast.error("Job Was Not Added");
+  }
+};
 </script>
 <template>
   <section class="bg-green-50">
     <div class="container m-auto max-w-2xl py-24">
-      <div
-        class="bg-white rounded-md shadow-md px-6 py-8 border mv-4 m-4 md:m-0"
-      >
-        <form>
+      <div class="bg-white rounded-md shadow-md px-6 py-8 border mv-4 m-4 md:m-0">
+        <form @submit.prevent="handleSubmit">
           <h2 class="text-3xl font-semibold text-center mb-6">Add Job</h2>
           <div class="mb-4">
-            <label for="type" class="block text-gray-700 font-bold mb-2"
-              >Job Type</label
-            >
+            <label for="type" class="block text-gray-700 font-bold mb-2">Job Type</label>
             <select
               v-model="form.type"
               name="type"
@@ -41,9 +66,7 @@ const form = reactive({
             </select>
           </div>
           <div class="mb-4">
-            <label class="block text-gray-700 font-bold mb-2"
-              >Job Listing Name</label
-            >
+            <label class="block text-gray-700 font-bold mb-2">Job Listing Name</label>
             <input
               type="text"
               v-model="form.title"
@@ -68,9 +91,7 @@ const form = reactive({
             ></textarea>
           </div>
           <div class="mb-4">
-            <label for="salary" class="block text-gray-700 font-bold mb-2"
-              >Salary</label
-            >
+            <label for="salary" class="block text-gray-700 font-bold mb-2">Salary</label>
             <select
               v-model="form.salary"
               name="salary"
@@ -120,9 +141,7 @@ const form = reactive({
             />
           </div>
           <div class="mb-4">
-            <label
-              for="company_description"
-              class="block text-gray-700 font-bold mb-2"
+            <label for="company_description" class="block text-gray-700 font-bold mb-2"
               >Company Description</label
             >
             <textarea
@@ -136,9 +155,7 @@ const form = reactive({
           </div>
 
           <div class="mb-4">
-            <label
-              for="contact_email"
-              class="block text-gray-700 font-bold mb-2"
+            <label for="contact_email" class="block text-gray-700 font-bold mb-2"
               >Contact Email</label
             >
             <input
@@ -152,9 +169,7 @@ const form = reactive({
             />
           </div>
           <div class="mb-4">
-            <label
-              for="contact_phone"
-              class="block text-gray-700 font-bold mb-2"
+            <label for="contact_phone" class="block text-gray-700 font-bold mb-2"
               >Contact Phone</label
             >
             <input
