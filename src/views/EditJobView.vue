@@ -1,6 +1,20 @@
 <script setup>
-import { reactive } from "vue";
+import { reactive, onMounted } from "vue";
+import router from "@/router";
 import BackButton from "@/components/BackButton.vue";
+import { useRoute } from "vue-router";
+import axios from "axios";
+import { useToast } from "vue-toastification";
+
+const route = useRoute();
+const toast = useToast();
+
+const jobId = route.params.id;
+
+const state = reactive({
+  job: {},
+  isLoading: true,
+});
 
 const form = reactive({
   type: "Full-Time",
@@ -15,20 +29,62 @@ const form = reactive({
     contactPhone: "",
   },
 });
+
+const handleUpdate = async () => {
+  const updateJob = {
+    type: form.type,
+    title: form.title,
+    description: form.description,
+    salary: form.salary,
+    location: form.location,
+    company: {
+      name: form.company.name,
+      description: form.company.description,
+      contactEmail: form.company.contactEmail,
+      contactPhone: form.company.contactPhone,
+    },
+  };
+
+  try {
+    const response = await axios.put(`/api/jobs/${jobId}`, updateJob);
+    toast.success("Job Updated Successfully");
+    router.push(`/jobs/${response.data.id}`);
+  } catch (error) {
+    console.log("Failed to fetch job", error);
+    toast.error("Job was not added");
+  }
+};
+
+onMounted(async () => {
+  try {
+    const response = await axios.get(`/api/jobs/${jobId}`);
+    state.job = response.data;
+    //populate fields
+    form.type = state.job.type;
+    form.title = state.job.title;
+    form.description = state.job.description;
+    form.location = state.job.location;
+    form.salary = state.job.salary;
+    form.company.name = state.job.company.name;
+    form.company.description = state.job.company.description;
+    form.company.contactEmail = state.job.company.contactEmail;
+    form.company.contactPhone = state.job.company.contactPhone;
+  } catch (error) {
+    console.log("Error fetching job", job);
+  } finally {
+    state.isLoading = false;
+  }
+});
 </script>
 <template>
   <BackButton />
   <section class="bg-green-50">
     <div class="container m-auto max-w-2xl py-24">
-      <div
-        class="bg-white rounded-md shadow-md px-6 py-8 border mv-4 m-4 md:m-0"
-      >
-        <form>
+      <div class="bg-white rounded-md shadow-md px-6 py-8 border mv-4 m-4 md:m-0">
+        <form @submit.prevent="handleUpdate">
           <h2 class="text-3xl font-semibold text-center mb-6">Add Job</h2>
           <div class="mb-4">
-            <label for="type" class="block text-gray-700 font-bold mb-2"
-              >Job Type</label
-            >
+            <label for="type" class="block text-gray-700 font-bold mb-2">Job Type</label>
             <select
               v-model="form.type"
               name="type"
@@ -43,9 +99,7 @@ const form = reactive({
             </select>
           </div>
           <div class="mb-4">
-            <label class="block text-gray-700 font-bold mb-2"
-              >Job Listing Name</label
-            >
+            <label class="block text-gray-700 font-bold mb-2">Job Listing Name</label>
             <input
               type="text"
               v-model="form.title"
@@ -70,9 +124,7 @@ const form = reactive({
             ></textarea>
           </div>
           <div class="mb-4">
-            <label for="salary" class="block text-gray-700 font-bold mb-2"
-              >Salary</label
-            >
+            <label for="salary" class="block text-gray-700 font-bold mb-2">Salary</label>
             <select
               v-model="form.salary"
               name="salary"
@@ -122,9 +174,7 @@ const form = reactive({
             />
           </div>
           <div class="mb-4">
-            <label
-              for="company_description"
-              class="block text-gray-700 font-bold mb-2"
+            <label for="company_description" class="block text-gray-700 font-bold mb-2"
               >Company Description</label
             >
             <textarea
@@ -138,9 +188,7 @@ const form = reactive({
           </div>
 
           <div class="mb-4">
-            <label
-              for="contact_email"
-              class="block text-gray-700 font-bold mb-2"
+            <label for="contact_email" class="block text-gray-700 font-bold mb-2"
               >Contact Email</label
             >
             <input
@@ -154,9 +202,7 @@ const form = reactive({
             />
           </div>
           <div class="mb-4">
-            <label
-              for="contact_phone"
-              class="block text-gray-700 font-bold mb-2"
+            <label for="contact_phone" class="block text-gray-700 font-bold mb-2"
               >Contact Phone</label
             >
             <input
@@ -174,7 +220,7 @@ const form = reactive({
               class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-full w-full focus:outline-none focus:shadow-outline"
               type="submit"
             >
-              Add Job
+              Update Job
             </button>
           </div>
         </form>
